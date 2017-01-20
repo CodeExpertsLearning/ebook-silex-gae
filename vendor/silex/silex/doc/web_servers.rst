@@ -14,6 +14,7 @@ following ``.htaccess`` file:
 
         RewriteEngine On
         #RewriteBase /path/to/app
+        RewriteCond %{REQUEST_FILENAME} !-d
         RewriteCond %{REQUEST_FILENAME} !-f
         RewriteRule ^ index.php [QSA,L]
     </IfModule>
@@ -29,7 +30,7 @@ Alternatively, if you use Apache 2.2.16 or higher, you can use the
 
 .. code-block:: apache
 
-    FallbackResource /index.php
+    FallbackResource index.php
 
 .. note::
 
@@ -56,7 +57,7 @@ The **minimum configuration** to get your application running under Nginx is:
         # location ~ ^/(index|index_dev)\.php(/|$) {
         location ~ ^/index\.php(/|$) {
             # the ubuntu default
-            fastcgi_pass   unix:/var/run/php5-fpm.sock;
+            fastcgi_pass   unix:/var/run/php/phpX.X-fpm.sock;
             # for running on centos
             #fastcgi_pass   unix:/var/run/php-fpm/www.sock;
     
@@ -131,13 +132,12 @@ point:
 
 .. _FallbackResource directive: http://www.adayinthelifeof.nl/2012/01/21/apaches-fallbackresource-your-new-htaccess-command/
 
-PHP 5.4
--------
+PHP
+---
 
-PHP 5.4 ships with a built-in webserver for development. This server allows
-you to run silex without any configuration. However, in order to serve static
-files, you'll have to make sure your front controller returns false in that
-case::
+PHP ships with a built-in webserver for development. This server allows you to
+run silex without any configuration. However, in order to serve static files,
+you'll have to make sure your front controller returns false in that case::
 
     // web/index.php
 

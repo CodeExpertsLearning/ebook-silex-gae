@@ -26,4 +26,26 @@ class UserService
 
 		return $user;
 	}
+
+	public function update($user) 
+	{
+		if(!$user instanceof User)
+			throw new \InvalidArgumentException("Parameter invalid must be a CodeExperts\App\Entity\User instance");
+
+		$this->em->merge($user);
+		$this->em->flush();
+
+		return $user;
+	}
+
+	public function delete($user)
+	{
+		if(!$user instanceof User)
+			throw new \InvalidArgumentException("Parameter invalid must be a CodeExperts\App\Entity\User instance");
+
+        $this->em->remove($user);
+        $this->em->flush();
+
+        return true;
+	}
 }

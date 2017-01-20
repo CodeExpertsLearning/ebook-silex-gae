@@ -286,10 +286,32 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
                         $arguments['configuration']->getFilename()
                     );
                 }
+
+                foreach ($arguments['loadedExtensions'] as $extension) {
+                    $this->writeMessage(
+                        'Extension',
+                        $extension
+                    );
+                }
+
+                foreach ($arguments['notLoadedExtensions'] as $extension) {
+                    $this->writeMessage(
+                        'Extension',
+                        $extension
+                    );
+                }
             }
 
             if (isset($arguments['deprecatedCheckForUnintentionallyCoveredCodeSettingUsed'])) {
-                print "Warning:       Deprecated configuration setting \"checkForUnintentionallyCoveredCode\" used\n";
+                $this->writeMessage('Warning', 'Deprecated configuration setting "checkForUnintentionallyCoveredCode" used');
+            }
+
+            if (isset($arguments['tapLogfile'])) {
+                $this->writeMessage('Warning', 'Deprecated TAP test listener used');
+            }
+
+            if (isset($arguments['jsonLogfile'])) {
+                $this->writeMessage('Warning', 'Deprecated JSON test listener used');
             }
         }
 
@@ -444,7 +466,7 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
             $result->addListener(
                 new PHPUnit_Util_Log_JUnit(
                     $arguments['junitLogfile'],
-                    $arguments['reportUselessTests']
+                    $arguments['logIncompleteSkipped']
                 )
             );
         }
@@ -882,22 +904,35 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
                     require_once $listener['file'];
                 }
 
-                if (class_exists($listener['class'])) {
-                    if (count($listener['arguments']) == 0) {
-                        $listener = new $listener['class'];
-                    } else {
-                        $listenerClass = new ReflectionClass(
+                if (!class_exists($listener['class'])) {
+                    throw new PHPUnit_Framework_Exception(
+                        sprintf(
+                            'Class "%s" does not exist',
                             $listener['class']
-                        );
-                        $listener      = $listenerClass->newInstanceArgs(
-                            $listener['arguments']
-                        );
-                    }
-
-                    if ($listener instanceof PHPUnit_Framework_TestListener) {
-                        $arguments['listeners'][] = $listener;
-                    }
+                        )
+                    );
                 }
+
+                $listenerClass = new ReflectionClass($listener['class']);
+
+                if (!$listenerClass->implementsInterface(PHPUnit_Framework_TestListener::class)) {
+                    throw new PHPUnit_Framework_Exception(
+                        sprintf(
+                            'Class "%s" does not implement the PHPUnit_Framework_TestListener interface',
+                            $listener['class']
+                        )
+                    );
+                }
+
+                if (count($listener['arguments']) == 0) {
+                    $listener = new $listener['class'];
+                } else {
+                    $listener = $listenerClass->newInstanceArgs(
+                        $listener['arguments']
+                    );
+                }
+
+                $arguments['listeners'][] = $listener;
             }
 
             $loggingConfiguration = $arguments['configuration']->getLoggingConfiguration();
@@ -982,6 +1017,11 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
             if (isset($loggingConfiguration['junit']) &&
                 !isset($arguments['junitLogfile'])) {
                 $arguments['junitLogfile'] = $loggingConfiguration['junit'];
+
+                if (isset($loggingConfiguration['logIncompleteSkipped']) &&
+                    !isset($arguments['logIncompleteSkipped'])) {
+                    $arguments['logIncompleteSkipped'] = $loggingConfiguration['logIncompleteSkipped'];
+                }
             }
 
             if (isset($loggingConfiguration['testdox-html']) &&
@@ -1049,6 +1089,7 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
         $arguments['convertWarningsToExceptions']                     = isset($arguments['convertWarningsToExceptions'])                     ? $arguments['convertWarningsToExceptions']                     : true;
         $arguments['excludeGroups']                                   = isset($arguments['excludeGroups'])                                   ? $arguments['excludeGroups']                                   : [];
         $arguments['groups']                                          = isset($arguments['groups'])                                          ? $arguments['groups']                                          : [];
+        $arguments['logIncompleteSkipped']                            = isset($arguments['logIncompleteSkipped'])                            ? $arguments['logIncompleteSkipped']                            : false;
         $arguments['processIsolation']                                = isset($arguments['processIsolation'])                                ? $arguments['processIsolation']                                : false;
         $arguments['repeat']                                          = isset($arguments['repeat'])                                          ? $arguments['repeat']                                          : false;
         $arguments['reportHighLowerBound']                            = isset($arguments['reportHighLowerBound'])                            ? $arguments['reportHighLowerBound']                            : 90;

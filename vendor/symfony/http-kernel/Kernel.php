@@ -16,7 +16,6 @@ use Symfony\Bridge\ProxyManager\LazyProxy\PhpDumper\ProxyDumper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\IniFileLoader;
@@ -59,15 +58,15 @@ abstract class Kernel implements KernelInterface, TerminableInterface
     protected $startTime;
     protected $loadClassCache;
 
-    const VERSION = '3.0.8';
-    const VERSION_ID = 30008;
+    const VERSION = '3.2.0';
+    const VERSION_ID = 30200;
     const MAJOR_VERSION = 3;
-    const MINOR_VERSION = 0;
-    const RELEASE_VERSION = 8;
+    const MINOR_VERSION = 2;
+    const RELEASE_VERSION = 0;
     const EXTRA_VERSION = '';
 
-    const END_OF_MAINTENANCE = '07/2016';
-    const END_OF_LIFE = '01/2017';
+    const END_OF_MAINTENANCE = '07/2017';
+    const END_OF_LIFE = '01/2018';
 
     /**
      * Constructor.
@@ -134,14 +133,6 @@ abstract class Kernel implements KernelInterface, TerminableInterface
         }
 
         if ($this->getHttpKernel() instanceof TerminableInterface) {
-            if (!$this->debug) {
-                if (function_exists('fastcgi_finish_request')) {
-                    fastcgi_finish_request();
-                } elseif ('cli' !== PHP_SAPI) {
-                    Response::closeOutputBuffers(0, true);
-                }
-            }
-
             $this->getHttpKernel()->terminate($request, $response);
         }
     }
@@ -337,11 +328,19 @@ abstract class Kernel implements KernelInterface, TerminableInterface
     }
 
     /**
-     * Used internally.
+     * @internal
      */
     public function setClassCache(array $classes)
     {
         file_put_contents($this->getCacheDir().'/classes.map', sprintf('<?php return %s;', var_export($classes, true)));
+    }
+
+    /**
+     * @internal
+     */
+    public function setAnnotatedClassCache(array $annotatedClasses)
+    {
+        file_put_contents($this->getCacheDir().'/annotations.map', sprintf('<?php return %s;', var_export($annotatedClasses, true)));
     }
 
     /**
@@ -440,8 +439,8 @@ abstract class Kernel implements KernelInterface, TerminableInterface
                 $hierarchy[] = $name;
             }
 
-            foreach ($hierarchy as $bundle) {
-                $this->bundleMap[$bundle] = $bundleMap;
+            foreach ($hierarchy as $hierarchyBundle) {
+                $this->bundleMap[$hierarchyBundle] = $bundleMap;
                 array_pop($bundleMap);
             }
         }
@@ -611,7 +610,8 @@ abstract class Kernel implements KernelInterface, TerminableInterface
      */
     protected function getContainerBuilder()
     {
-        $container = new ContainerBuilder(new ParameterBag($this->getKernelParameters()));
+        $container = new ContainerBuilder();
+        $container->getParameterBag()->add($this->getKernelParameters());
 
         if (class_exists('ProxyManager\Configuration') && class_exists('Symfony\Bridge\ProxyManager\LazyProxy\Instantiator\RuntimeInstantiator')) {
             $container->setProxyInstantiator(new RuntimeInstantiator());

@@ -26,7 +26,6 @@
  *          convertNoticesToExceptions="true"
  *          convertWarningsToExceptions="true"
  *          forceCoversAnnotation="false"
- *          printerClass="PHPUnit_TextUI_ResultPrinter"
  *          processIsolation="false"
  *          stopOnError="false"
  *          stopOnFailure="false"
@@ -36,6 +35,8 @@
  *          stopOnSkipped="false"
  *          failOnWarning="false"
  *          failOnRisky="false"
+ *          extensionsDirectory="tools/phpunit.d"
+ *          printerClass="PHPUnit_TextUI_ResultPrinter"
  *          testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader"
  *          beStrictAboutChangesToGlobalState="false"
  *          beStrictAboutCoversAnnotation="false"
@@ -116,7 +117,7 @@
  *     <log type="plain" target="/tmp/logfile.txt"/>
  *     <log type="tap" target="/tmp/logfile.tap"/>
  *     <log type="teamcity" target="/tmp/logfile.txt"/>
- *     <log type="junit" target="/tmp/logfile.xml"/>
+ *     <log type="junit" target="/tmp/logfile.xml" logIncompleteSkipped="false"/>
  *     <log type="testdox-html" target="/tmp/testdox.html"/>
  *     <log type="testdox-text" target="/tmp/testdox.txt"/>
  *     <log type="testdox-xml" target="/tmp/testdox.xml"/>
@@ -399,6 +400,13 @@ class PHPUnit_Util_Configuration
                     $result['crap4jThreshold'] = $this->getInteger(
                         (string) $log->getAttribute('threshold'),
                         30
+                    );
+                }
+            } elseif ($type == 'junit') {
+                if ($log->hasAttribute('logIncompleteSkipped')) {
+                    $result['logIncompleteSkipped'] = $this->getBoolean(
+                        (string) $log->getAttribute('logIncompleteSkipped'),
+                        false
                     );
                 }
             } elseif ($type == 'coverage-text') {
@@ -830,6 +838,14 @@ class PHPUnit_Util_Configuration
             );
         }
 
+        if ($root->hasAttribute('extensionsDirectory')) {
+            $result['extensionsDirectory'] = $this->toAbsolutePath(
+                    (string) $root->getAttribute(
+                        'extensionsDirectory'
+                    )
+            );
+        }
+
         return $result;
     }
 
@@ -863,6 +879,22 @@ class PHPUnit_Util_Configuration
 
             return $suite;
         }
+    }
+
+    /**
+     * Returns the test suite names from the configuration.
+     *
+     * @return array
+     */
+    public function getTestSuiteNames()
+    {
+        $names = [];
+        $nodes = $this->xpath->query('*/testsuite');
+        foreach ($nodes as $node) {
+            $names[] = $node->getAttribute('name');
+        }
+
+        return $names;
     }
 
     /**
