@@ -6,14 +6,13 @@ use CodeExperts\App\Entity\User;
 use CodeExperts\App\Service\PasswordService;
 
 
-class UserServiceTest extends TestCase
+class EMServiceTest extends TestCase
 {
     private $er;
 
     public function setUp()
     {
         $this->er = $this->getDoctrineEntityRepositoryMock();
-        
 
         $this->er->expects($this->any())
                  ->method('getRepository')
@@ -40,21 +39,21 @@ class UserServiceTest extends TestCase
         $user->setCreatedAt(new \DateTime("now", new \DateTimeZone("America/Sao_Paulo")));
         $user->setUpdatedAt(new \DateTime("now", new \DateTimeZone("America/Sao_Paulo")));
 
-        $userService = new UserService($this->getDoctrineEntityManagerMock());
+        $userService = new EMService($this->getDoctrineEntityManagerMock());
         $insert = $userService->create($user);
 
-        $this->assertInstanceOf("CodeExperts\App\Entity\User", $insert);
+        $this->assertInstanceOf("CodeExperts\\App\\Entity\\User", $insert);
     }
 
     /**
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Parameter invalid must be a CodeExperts\App\Entity\User instance
+     * @expectedExceptionMessage Parameter invalid must be a CodeExperts\App\Entity\Contract\Entity instance
      */
     public function testInvalidUserCreate()
     {
      	$user = (object) [];
 
-        $userService = new UserService($this->getDoctrineEntityManagerMock());
+        $userService = new EMService($this->getDoctrineEntityManagerMock());
 
         $insert = $userService->create($user);
     }
@@ -75,7 +74,7 @@ class UserServiceTest extends TestCase
         $user->setCreatedAt(new \DateTime("now", new \DateTimeZone("America/Sao_Paulo")));
         $user->setUpdatedAt(new \DateTime("now", new \DateTimeZone("America/Sao_Paulo")));
 
-        $userService = new UserService($this->getDoctrineEntityManagerMock());
+        $userService = new EMService($this->getDoctrineEntityManagerMock());
         $update      = $userService->update($user);
 
         $this->assertInstanceOf("CodeExperts\App\Entity\User", $update);
@@ -83,13 +82,13 @@ class UserServiceTest extends TestCase
 
     /**
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Parameter invalid must be a CodeExperts\App\Entity\User instance
+     * @expectedExceptionMessage Parameter invalid must be a CodeExperts\App\Entity\Contract\Entity instance
      */
     public function testInvalidUserUpdate()
     {
         $user = (object) [];
 
-        $userService = new UserService($this->getDoctrineEntityManagerMock());
+        $userService = new EMService($this->getDoctrineEntityManagerMock());
 
         $insert = $userService->update($user);
     }
@@ -98,7 +97,7 @@ class UserServiceTest extends TestCase
     {
         $user = $this->er->getRepository('CodeExperts\App\Entity\User')->find(1);
 
-        $userService = new UserService($this->getDoctrineEntityManagerMock());
+        $userService = new EMService($this->getDoctrineEntityManagerMock());
 
         $this->assertTrue($userService->delete($user));
     }
@@ -106,13 +105,13 @@ class UserServiceTest extends TestCase
 
     /**
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Parameter invalid must be a CodeExperts\App\Entity\User instance
+     * @expectedExceptionMessage Parameter invalid must be a CodeExperts\App\Entity\Contract\Entity instance
      */
     public function testInvalidUserDelete()
     {
         $user = (object) [];
 
-        $userService = new UserService($this->getDoctrineEntityManagerMock());
+        $userService = new EMService($this->getDoctrineEntityManagerMock());
 
         $insert = $userService->delete($user);
     }

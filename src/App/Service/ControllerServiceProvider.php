@@ -1,6 +1,8 @@
 <?php
 namespace CodeExperts\App\Service;
 
+use CodeExperts\App\Controller\EventController;
+use CodeExperts\App\Controller\UserController;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use CodeExperts\App\Controller\HomeController;
@@ -13,5 +15,12 @@ class ControllerServiceProvider implements ServiceProviderInterface
             return new HomeController($app);
         };
 
+        $app['user'] = function() use ($app) {
+            return new UserController($app);
+        };
+
+        $app['event'] = function() use ($app) {
+            return new EventController($app);
+        };
     }
 }

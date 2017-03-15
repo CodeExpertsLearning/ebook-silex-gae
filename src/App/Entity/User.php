@@ -1,18 +1,24 @@
 <?php 
 namespace CodeExperts\App\Entity;
 
+use CodeExperts\App\Entity\Contract\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * User
  *
  * @ORM\Table(name="users")
- * 
+ * @ORM\Entity
+ *
  */
-class User 
+class User implements Entity
 {
 	/**
      * @var int
+     *
+     * @JMS\Groups({"list"})
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -24,6 +30,8 @@ class User
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=150)
+     *
+     * @JMS\Groups({"list"})
      */
 	private $name;
 
@@ -31,6 +39,8 @@ class User
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255)
+     *
+     * @JMS\Groups({"list"})
      */
 	private $email;
 
@@ -38,6 +48,8 @@ class User
      * @var string
      *
      * @ORM\Column(name="username", type="string", length=80)
+     *
+     * @JMS\Groups({"list"})
      */
 	private $username;
 
@@ -59,6 +71,8 @@ class User
      * @var string
      *
      * @ORM\Column(name="created_at", type="datetime")
+     *
+     * @JMS\Groups({"list"})
      */
 	private $createdAt;
 	
@@ -68,9 +82,18 @@ class User
      * @ORM\Column(name="updated_at", type="datetime")
      */
 	private $updatedAt;
-	
 
-	public function getId()
+    /**
+     * @var ArrayCollection
+     */
+	private $eventCollection;
+
+	public function __construct()
+    {
+        $this->eventCollection = new ArrayCollection();
+    }
+
+    public function getId()
 	{
 		return $this->id;
 	}
@@ -157,4 +180,23 @@ class User
 	{
 		return $this->updatedAt;
 	}
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getEventsCollection()
+    {
+        return $this->eventCollection;
+    }
+
+    /**
+     * @param ArrayCollection $eventCollection
+     * @return User
+     */
+    public function setEventsCollection($eventCollection)
+    {
+        $this->eventCollection = $eventCollection;
+        return $this;
+    }
+
 }
