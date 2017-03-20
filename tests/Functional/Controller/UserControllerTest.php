@@ -22,7 +22,11 @@ class UserControllerTest extends FunctionalTestCase
     {
         $client = $this->createClient();
 
-        $response = $client->request('GET', '/users/1');
+        $users = $client->request('GET', '/users');
+
+        $id    = json_decode($users->getBody())[0]->id;
+
+        $response = $client->request('GET', '/users/' . $id);
 
         $this->assertEquals(200, $response->getStatusCode());
 
@@ -50,27 +54,20 @@ class UserControllerTest extends FunctionalTestCase
         $this->assertEquals('User created with success', json_decode($response->getBody())->msg);
     }
 
-    public function testUpdateANewUser()
+    public function testUpdateAUser()
     {
         $client = $this->createClient();
 
-        $data = array(
-            'name' => 'User Test',
-            'email' => 'emailTest@email.com',
-            'username' => 'userTest',
-            'password' => '123456'
-        );
+        $users = $client->request('GET', '/users');
 
-        $client->request('POST', '/users', [
-            'form_params' => $data
-        ]);
+        $id    = json_decode($users->getBody())[0]->id;
 
         $dataUpdate = array(
             'name' => 'User Test Edited',
             'email' => 'emailTest@email.com',
             'username' => 'userTest',
             'password' => '123456',
-            'id'       => '1'
+            'id'       => $id
         );
 
         $response = $client->request('PUT', '/users', [
@@ -79,5 +76,21 @@ class UserControllerTest extends FunctionalTestCase
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('User updated with success', json_decode($response->getBody())->msg);
+    }
+
+    public function testDeleteAUser()
+    {
+        $client = $this->createClient();
+
+
+        $users = $client->request('GET', '/users');
+
+        $id    = json_decode($users->getBody())[0]->id;
+
+
+        $response = $client->request('DELETE', '/users/' . $id);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('User deleted with success', json_decode($response->getBody())->msg);
     }
 }
