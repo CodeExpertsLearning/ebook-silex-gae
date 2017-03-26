@@ -5,6 +5,25 @@ use CodeExperts\App\FunctionalTestCase;
 
 class UserControllerTest extends FunctionalTestCase
 {
+    public function testAInsertNewUser()
+    {
+        $client = $this->createClient();
+
+        $data = array(
+            'name' => 'User Test',
+            'email' => 'emailTest@email.com',
+            'username' => 'userTest',
+            'password' => '123456'
+        );
+
+        $response = $client->request('POST', '/users', [
+            'form_params' => $data
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('User created with success', json_decode($response->getBody())->msg);
+    }
+
     public function testGetAllUsers()
     {
         $client = $this->createClient();
@@ -33,25 +52,6 @@ class UserControllerTest extends FunctionalTestCase
         $this->assertObjectHasAttribute('name', json_decode($response->getBody()));
         $this->assertObjectHasAttribute('email', json_decode($response->getBody()));
         $this->assertObjectHasAttribute('username', json_decode($response->getBody()));
-    }
-
-    public function testAInsertNewUser()
-    {
-        $client = $this->createClient();
-
-        $data = array(
-            'name' => 'User Test',
-            'email' => 'emailTest@email.com',
-            'username' => 'userTest',
-            'password' => '123456'
-        );
-
-        $response = $client->request('POST', '/users', [
-            'form_params' => $data
-        ]);
-
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('User created with success', json_decode($response->getBody())->msg);
     }
 
     public function testUpdateAUser()

@@ -49,7 +49,7 @@ class EventController extends BaseController
         $event->setTitle($data['title']);
         $event->setContent($data['content']);
         $event->setDescription($data['description']);
-        $event->setVenue($data['avenue']);
+        $event->setVenue($data['venue']);
         $event->setAddress($data['address']);
         $event->setStartDate($data['start_date']);
         $event->setEndDate($data['end_date']);
