@@ -79,4 +79,14 @@ class EMServiceTest extends FunctionalTestCase
         $this->assertEquals("8.PHP - Title Edited!", $event->getTitle());
         $this->assertEquals("2016-11-12", $event->getStartDate());
     }
+
+    public function testInsertANewSubscription()
+    {
+        $user = $this->createUser();
+        $event = $this->createEvent();
+
+        $emService = new EMService($this->getEntityManagerTest());
+
+        $this->assertTrue($emService->addSubscription($user, $event));
+    }
 }

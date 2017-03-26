@@ -47,4 +47,9 @@ class EMService
 
         return true;
 	}
+
+	public function addSubscription($user, $event)
+    {
+        return true;
+    }
 }
