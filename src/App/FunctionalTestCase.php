@@ -60,7 +60,7 @@ class FunctionalTestCase extends \PHPUnit_Framework_TestCase
         $user->setUpdatedAt(new \DateTime("now", new \DateTimeZone("America/Sao_Paulo")));
 
         $emService = new EMService($this->getEntityManagerTest());
-        $emService->create($user);
+        return $emService->create($user);
     }
 
     protected function createEvent()
@@ -81,7 +81,7 @@ class FunctionalTestCase extends \PHPUnit_Framework_TestCase
         $event->setUpdatedAt(new \DateTime("now", new \DateTimeZone("America/Sao_Paulo")));
 
         $emService = new EMService($this->getEntityManagerTest());
-        $emService->create($event);
+        return $emService->create($event);
     }
 
     protected function createClient()

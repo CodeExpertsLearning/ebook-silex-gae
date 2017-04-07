@@ -109,6 +109,7 @@ class Event implements Entity
 
     /**
      * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="User", inversedBy="eventCollection", cascade={"ALL"})
      */
     private $userCollection;
 
@@ -364,11 +365,16 @@ class Event implements Entity
 
     /**
      * @param ArrayCollection $userCollection
-     * @return Event
+     * @return ArrayCollection/Event
      */
     public function setUserCollection($userCollection)
     {
-        $this->userCollection = $userCollection;
+        if($this->userCollection->contains($userCollection)) {
+            return;
+        }
+
+        $this->userCollection->add($userCollection);
+
         return $this;
     }
 }

@@ -3,6 +3,7 @@ namespace CodeExperts\Functional\Service;
 
 use CodeExperts\App\FunctionalTestCase;
 use CodeExperts\App\Service\EMService;
+use JMS\Serializer\Exception\Exception;
 
 class EMServiceTest extends FunctionalTestCase
 {
@@ -78,15 +79,5 @@ class EMServiceTest extends FunctionalTestCase
 
         $this->assertEquals("8.PHP - Title Edited!", $event->getTitle());
         $this->assertEquals("2016-11-12", $event->getStartDate());
-    }
-
-    public function testInsertANewSubscription()
-    {
-        $user = $this->createUser();
-        $event = $this->createEvent();
-
-        $emService = new EMService($this->getEntityManagerTest());
-
-        $this->assertTrue($emService->addSubscription($user, $event));
     }
 }

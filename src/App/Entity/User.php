@@ -85,6 +85,7 @@ class User implements Entity
 
     /**
      * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity="Event", mappedBy="userCollection")
      */
 	private $eventCollection;
 
@@ -184,18 +185,23 @@ class User implements Entity
     /**
      * @return ArrayCollection
      */
-    public function getEventsCollection()
+    public function getEventCollection()
     {
         return $this->eventCollection;
     }
 
     /**
      * @param ArrayCollection $eventCollection
-     * @return User
+     * @return ArrayCollection/User
      */
-    public function setEventsCollection($eventCollection)
+    public function setEventCollection($eventCollection)
     {
-        $this->eventCollection = $eventCollection;
+        if($this->eventCollection->contains($eventCollection)) {
+            return;
+        }
+
+        $this->eventCollection->add($eventCollection);
+
         return $this;
     }
 

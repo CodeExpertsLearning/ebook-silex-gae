@@ -36,5 +36,10 @@ class RouterServiceProvider implements ServiceProviderInterface
         $app->post('/events', 'event:save');
         $app->put('/events', 'event:update');
         $app->delete('/events/{id}', 'event:delete');
+
+        /**
+         * Subscription
+         */
+        $app->post('/events/{event_id}/subscription', 'subscription:index');
     }
 }

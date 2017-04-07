@@ -2,6 +2,7 @@
 namespace CodeExperts\App\Service;
 
 use CodeExperts\App\Controller\EventController;
+use CodeExperts\App\Controller\SubscriptionController;
 use CodeExperts\App\Controller\UserController;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
@@ -21,6 +22,10 @@ class ControllerServiceProvider implements ServiceProviderInterface
 
         $app['event'] = function() use ($app) {
             return new EventController($app);
+        };
+
+        $app['subscription'] = function() use ($app) {
+            return new SubscriptionController($app);
         };
     }
 }
