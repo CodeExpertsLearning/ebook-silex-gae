@@ -10,6 +10,9 @@ use GuzzleHttp\Client;
 
 class FunctionalTestCase extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @author Elton Minetto <eminetto@gmail.com>
+     */
     public function setUp()
     {
         $em = $this->getEntityManagerTest();
@@ -23,6 +26,9 @@ class FunctionalTestCase extends \PHPUnit_Framework_TestCase
         parent::setup();
     }
 
+    /**
+     * @author Elton Minetto <eminetto@gmail.com>
+     */
     public function tearDown()
     {
         $em = $this->getEntityManagerTest();
@@ -36,6 +42,9 @@ class FunctionalTestCase extends \PHPUnit_Framework_TestCase
         parent::tearDown();
     }
 
+    /**
+     * @author Elton Minetto <eminetto@gmail.com>
+     */
     public function getEntityManagerTest()
     {
         $entity = require __DIR__ . '/../../tests/bootstrap.php';
