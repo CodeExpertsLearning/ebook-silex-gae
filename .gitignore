@@ -1,5 +1,5 @@
-vendor/
-.idea/
-.DS_Store
-.idea/workspace.xml
-memory
+/vendor/
+/.idea/
+/.DS_Store
+/.idea/workspace.xml
+/memory

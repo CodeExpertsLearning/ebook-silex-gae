@@ -13,7 +13,7 @@ class PasswordService
 
 	public function generate()
 	{
-		$opt = ['cost' => 11, 'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM)];
+		$opt = ['cost' => 11];
 
 		return password_hash($this->password, PASSWORD_BCRYPT, $opt);
 	}
