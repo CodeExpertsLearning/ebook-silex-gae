@@ -13,6 +13,10 @@ class RouterServiceProvider implements ServiceProviderInterface
         $app->after(function(Request $request, Response $response) {
             $response->headers->set('Content-Type', 'application/json');
         });
+	    /**
+	     * Auth
+	     */
+	    $app->post('/auth/login', 'auth:login');
 
         /**
          * Retorna Todos os Usuários

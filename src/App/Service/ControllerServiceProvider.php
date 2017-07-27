@@ -1,6 +1,7 @@
 <?php
 namespace CodeExperts\App\Service;
 
+use CodeExperts\App\Controller\AuthController;
 use CodeExperts\App\Controller\EventController;
 use CodeExperts\App\Controller\SubscriptionController;
 use CodeExperts\App\Controller\UserController;
@@ -12,20 +13,24 @@ class ControllerServiceProvider implements ServiceProviderInterface
 {
     public function register(Container $app)
     {
-        $app['home'] = function() use ($app) {
+        $app['home'] = function(Container $app) {
             return new HomeController($app);
         };
 
-        $app['user'] = function() use ($app) {
+        $app['user'] = function(Container $app) {
             return new UserController($app);
         };
 
-        $app['event'] = function() use ($app) {
+        $app['event'] = function(Container $app) {
             return new EventController($app);
         };
 
-        $app['subscription'] = function() use ($app) {
+        $app['subscription'] = function(Container $app) {
             return new SubscriptionController($app);
         };
+
+        $app['auth'] = function (Container $app){
+		    return new AuthController($app);
+	    };
     }
 }
