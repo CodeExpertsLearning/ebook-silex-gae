@@ -97,11 +97,26 @@ class FunctionalTestCase extends \PHPUnit_Framework_TestCase
     {
         $client = new Client(array(
             'base_uri' => 'http://localhost:8000',
-            'request.options' => array(
-                'exceptions' => false,
-            )
+            'http_errors' => false
         ));
 
         return $client;
+    }
+
+
+    protected function makeLogin()
+    {
+        $client = $this->createClient();
+
+        $credentials = [
+            'email' => 'emailTest@email.com',
+            'password' => '123456'
+        ];
+
+        $response = $client->request('POST', '/auth/login', [
+            'form_params' => $credentials
+        ]);
+
+        return $response;
     }
 }

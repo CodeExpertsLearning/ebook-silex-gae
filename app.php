@@ -2,7 +2,7 @@
 
 require 'bootstrap.php';
 
-use ApiMaster\Service\JWTServiceProvider;
+use CodeExperts\App\Service\JWTServiceProvider;
 use Silex\Application;
 
 
@@ -13,6 +13,7 @@ $app['debug'] = true;
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 $app->register(new CodeExperts\App\Service\RouterServiceProvider());
 $app->register(new CodeExperts\App\Service\ControllerServiceProvider());
+
 $app->register(new JWTServiceProvider(), [
 	'iss' => $_SERVER['SERVER_NAME'],
 	'secret' => 'xyzxyz',

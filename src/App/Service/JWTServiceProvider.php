@@ -1,5 +1,5 @@
 <?php
-namespace ApiMaster\Service;
+namespace CodeExperts\App\Service;
 
 use CodeExperts\App\Security\Token;
 use Lcobucci\JWT\Builder;

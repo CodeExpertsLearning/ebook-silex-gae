@@ -25,8 +25,9 @@ class AuthController
 		#validations
 
 		$user = $this->app['orm.em']
-			->getRepository('ApiMaster\Model\User')
-			->findOneByEmail($data['email'])[0];
+			->getRepository('CodeExperts\App\Entity\User')
+			->findOneByEmail($data['email']);
+			
 		if(!$user
 		   || $data['email'] != $user->getEmail()) {
 			return $this->app->json(['msg' => 'Usuário ou senha incorretos!'],
@@ -47,6 +48,6 @@ class AuthController
 			'username' => $user->getEmail()
 		]);
 
-		return $this->app->json(['token' => $jwt->generateToken()->__toString()]);
+		return $this->app->json(['token' => (string) $jwt->generateToken()]);
 	}
 }

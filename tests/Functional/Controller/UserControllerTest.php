@@ -7,6 +7,10 @@ class UserControllerTest extends FunctionalTestCase
 {
     public function testAInsertNewUser()
     {
+        $response = $this->makeLogin();
+        
+        $token = json_decode($response->getBody())->token;
+
         $client = $this->createClient();
 
         $data = array(
@@ -17,7 +21,8 @@ class UserControllerTest extends FunctionalTestCase
         );
 
         $response = $client->request('POST', '/users', [
-            'form_params' => $data
+            'form_params' => $data,
+            'headers' => ['Authorization' => 'Bearer ' . $token]
         ]);
 
         $this->assertEquals(200, $response->getStatusCode());

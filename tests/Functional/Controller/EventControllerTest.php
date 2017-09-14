@@ -6,7 +6,11 @@ use CodeExperts\App\FunctionalTestCase;
 class EventControllerTest extends FunctionalTestCase
 {
     public function testAInsertNewEvent()
-    {
+    {        
+        $response = $this->makeLogin();
+        
+        $token = json_decode($response->getBody())->token;
+
         $client = $this->createClient();
 
         $data = array(
@@ -22,7 +26,10 @@ class EventControllerTest extends FunctionalTestCase
         );
 
         $response = $client->request('POST', '/events', [
-            'form_params' => $data
+            'form_params' => $data,
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token
+            ]
         ]);
 
         $this->assertEquals(200, $response->getStatusCode());
